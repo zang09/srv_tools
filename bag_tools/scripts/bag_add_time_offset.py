@@ -53,8 +53,8 @@ def fix_bagfile(inbag, outbag, topics, offset):
     for topic in topics:
       count[topic] = 0
 
-    for topic, msg, t in rosbag.Bag(inbag).read_messages():
-        if topic in topics:
+    for topic, msg, t in rosbag.Bag(inbag,'r').read_messages():
+	if topic in topics:
             outbag.write(topic, msg, t + time_offset)
             count[topic] = count[topic] + 1
         else:
@@ -75,7 +75,8 @@ if __name__ == "__main__":
   parser.add_argument('-t', metavar='TOPIC', required=True, help='topic(s) to change', nargs='+')
   args = parser.parse_args()
   try:
-      fix_bagfile(args.i, args.o, arg.t, args.of)
+    for bagfile in args.i:
+      fix_bagfile(bagfile, args.o, args.t, args.of)
   except Exception, e:
-      import traceback
-      traceback.print_exc()
+    import traceback
+    traceback.print_exc()
